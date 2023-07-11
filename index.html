@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>대한민국 해양 방사능 오염정도</title>
+</head>
+<body>
+<header>
+    <h1>대한민국 해양 방사능 안전 정보</h1>
+</header>
+
+<div class="tab-container">
+    <div class="tab-menu">
+        <button class="tab-button active" data-tab="tab1">삼중수소</button>
+        <button class="tab-button" data-tab="tab2">세슘137</button>
+    </div>
+    <div class="tab-content">
+        <div id="tab1" class="tab-panel active">
+            <div class="content tritium-map">
+                <img src="img/map.jpg">
+                <div class="boundary-line"></div>
+                <ul>
+                    <li class="south-east">남해동부</li>
+                    <li class="south-center">남해중부</li>
+                    <li class="south-west">남해서부</li>
+                    <li class="jeju">제주도해역</li>
+                    <li class="east-south">동해중부</li>
+                    <li class="east-north">동해북부</li>
+                    <li class="west-south">서해남부</li>
+                    <li class="west-center">서해중부</li>
+                    <li class="west-north">서해북부</li>
+                </ul>
+            </div>
+        </div>
+        <div id="tab2" class="tab-panel">
+            <div class="content cesium-map">
+                <img src="img/map.jpg">
+                <ul>
+                    <li class="south-east"><span>남해동부</span></li>
+                    <li class="south-center">남해중부</li>
+                    <li class="south-west">남해서부</li>
+                    <li class="jeju">제주도해역</li>
+                    <li class="east-south">동해중부</li>
+                    <li class="east-north">동해북부</li>
+                    <li class="west-south">서해남부</li>
+                    <li class="west-center">서해중부</li>
+                    <li class="west-north">서해북부</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <footer>
+        <p>© 대한민국 해양 방사능 안전 정보 All rights reserved.</p>
+        <p>Copylight (c) 2023 | 이메일: powerku@naver.com | <a href="https://powerku.tistory.com">https://powerku.tistory.com</a></p>
+    </footer>
+<script>
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
+
+            // 모든 탭 버튼 및 패널의 활성화 클래스를 제거합니다.
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanels.forEach(panel => panel.classList.remove('active'));
+
+            // 선택한 탭 버튼 및 패널에 활성화 클래스를 추가합니다.
+            button.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", async function(){
+        const response = await fetch('http://localhost:3000/api/data', {
+            method: 'GET', // 또는 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        let data = await response.json()
+        data = JSON.parse(data);
+
+        const list = data.response.body.items.item
+        console.log(list)
+
+        list.forEach((item) => {
+            const part = item.part;
+            const isSafe = item.estnm
+            const div = document.createElement('div');
+            div.classList.add('badge');
+
+            let region1;
+            let region2;
+
+            switch (part) {
+                case "남해동부":
+                     region1 = document.querySelector('.tritium-map .south-east');
+                     region2 = document.querySelector('.cesium-map .south-east');
+                    break;
+                case "동해중부":
+                    region1 = document.querySelector('.tritium-map .east-south');
+                    region2 = document.querySelector('.cesium-map .east-south');
+                    break;
+                case "동해북부":
+                    region1 = document.querySelector('.tritium-map .east-north');
+                    region2 = document.querySelector('.cesium-map .east-north');
+                    break;
+                case "남해중부":
+                     region1 = document.querySelector('.tritium-map .south-center');
+                     region2 = document.querySelector('.cesium-map .south-center');
+                    break;
+                case "남해서부":
+                     region1 = document.querySelector('.tritium-map .south-west');
+                     region2 = document.querySelector('.cesium-map .south-west');
+                    break;
+                case "제주해역":
+                     region1 = document.querySelector('.tritium-map .jeju');
+                     region2 = document.querySelector('.cesium-map .jeju');
+                    break;
+                case "서해남부":
+                     region1 = document.querySelector('.tritium-map .west-south');
+                     region2 = document.querySelector('.cesium-map .west-south');
+                    break;
+                case "서해중부":
+                     region1 = document.querySelector('.tritium-map .west-center');
+                     region2 = document.querySelector('.cesium-map .west-center');
+                    break;
+                case "서해북부":
+                     region1 = document.querySelector('.tritium-map .west-north');
+                     region2 = document.querySelector('.cesium-map .west-north');
+                    break;
+            }
+
+            if (item.type === "삼중수소") {
+                region1.appendChild(div)
+                if (isSafe === '안전') {
+                    div.textContent = isSafe
+                    div.classList.add('safe');
+                } else {
+                    div.classList.add('danger');
+                }
+            }
+
+            if (item.type === "세슘137") {
+                region2.appendChild(div)
+                if (isSafe === '안전') {
+                    div.textContent = isSafe
+                    div.classList.add('safe');
+                } else {
+                    div.classList.add('danger');
+                }
+            }
+        })
+
+    });
+</script>
+
+<style>
+    @font-face {
+        font-family: 'SUITE-Regular';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    body {
+        font-family: 'SUITE-Regular';
+    }
+    ul {
+        height: 0;
+    }
+    ul li {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+        color: #fff;
+    }
+    .safe {
+        background-color: #27ae60;
+    }
+    .danger {
+        background-color: #c0392b;
+    }
+    .south-east {
+        position: relative;
+        top: -185px;
+        left: 133px;
+        width: 80px;
+        list-style: none;
+    }
+    .south-center {
+        position: relative;
+        top: -172px;
+        left: 51px;
+        width: 80px;
+        list-style: none;
+    }
+    .south-west {
+        position: relative;
+        top: -207px;
+        left: -129px;
+        width: 80px;
+        list-style: none;
+    }
+    .east-south {
+        position: relative;
+        top: -460px;
+        left: 133px;
+        width: 80px;
+        list-style: none;
+    }
+    .east-north {
+        position: relative;
+        top: -602px;
+        left: 133px;
+        width: 80px;
+        list-style: none;
+    }
+    .jeju {
+        position: relative;
+        top: -218px;
+        left: 0px;
+        width: 80px;
+        list-style: none;
+    }
+    .west-south {
+        position: relative;
+        top: -486px;
+        left: -144px;
+        width: 80px;
+        list-style: none;
+    }
+    .west-center {
+        position: relative;
+        top: -610px;
+        left: -144px;
+        width: 80px;
+        list-style: none;
+    }
+    .west-north {
+        position: relative;
+        top: -726px;
+        left: -198px;
+        width: 80px;
+        list-style: none;
+    }
+    header {
+        /*background-color: #333;*/
+        color: black;
+        /*padding: 10px;px*/
+        text-align: center;
+    }
+    /* 푸터 스타일 */
+    footer {
+        /*background-color: #333;*/
+        color: black;
+        padding: 10px;
+        text-align: center;
+    }
+    footer p {
+        margin: 0;
+    }
+
+    /* 탭 메뉴 스타일 */
+    .tab-menu {
+        display: flex;
+        justify-content: center;
+    }
+
+    .tab-button {
+        background-color: #f2f2f2;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    .tab-button.active {
+        background-color: #ccc;
+    }
+
+    .tab-content {
+        margin-top: 10px;
+    }
+
+    /* 탭 패널 스타일 */
+    .tab-panel {
+        display: none;
+        padding: 0 10px;
+        justify-content: center;
+    }
+
+    .tab-panel .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .tab-panel .content img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .tab-panel.active {
+        display: block;
+    }
+</style>
+
+</body>
+
+</html>
