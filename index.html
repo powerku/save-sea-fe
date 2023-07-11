@@ -76,7 +76,9 @@
     document.addEventListener("DOMContentLoaded", async function(){
         const response = await fetch('https://beu5bi3o5ohczk5oey7iemvozi0vbkud.lambda-url.ap-northeast-2.on.aws/api/data', {
             method: 'GET', // 또는 'PUT'
+            credentials: 'include',
             headers: {
+                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
             }
         })
