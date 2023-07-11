@@ -75,10 +75,12 @@
 
     document.addEventListener("DOMContentLoaded", async function(){
         const response = await fetch('https://beu5bi3o5ohczk5oey7iemvozi0vbkud.lambda-url.ap-northeast-2.on.aws/api/data', {
-            method: 'GET', // 또는 'PUT'
+            mode: 'cors',
             credentials: 'include',
+            method: 'GET', // 또는 'PUT'
             headers: {
-                'Access-Control-Allow-Origin': '*',
+                'Origin':'https://save-sea-fe.pages.dev/',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
             }
         })
@@ -86,7 +88,6 @@
         data = JSON.parse(data);
 
         const list = data.response.body.items.item
-        console.log(list)
 
         list.forEach((item) => {
             const part = item.part;
