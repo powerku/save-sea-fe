@@ -74,19 +74,15 @@
     });
 
     document.addEventListener("DOMContentLoaded", async function(){
-        const response = await fetch('https://beu5bi3o5ohczk5oey7iemvozi0vbkud.lambda-url.ap-northeast-2.on.aws/api/data', {
-            mode: 'cors',
-            credentials: 'include',
+        // const response = await fetch('http://localhost:3000/api/data', {
+            const response = await fetch('https://beu5bi3o5ohczk5oey7iemvozi0vbkud.lambda-url.ap-northeast-2.on.aws/api/data', {
             method: 'GET', // 또는 'PUT'
             headers: {
-                'Origin':'https://save-sea-fe.pages.dev/',
-                'Accept': 'application/json',
                 'Content-Type': 'application/json',
             }
         })
         let data = await response.json()
         data = JSON.parse(data);
-
         const list = data.response.body.items.item
 
         list.forEach((item) => {
