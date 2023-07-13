@@ -169,8 +169,10 @@
 
             if (item.type === "삼중수소") {
                 const table1 = document.querySelector('.tritium-table');
-                table1.appendChild(tr);
-
+                if (table1.childElementCount < 10) {
+                    table1.appendChild(tr);
+                }
+                region1.innerHTML = part
                 region1.appendChild(div)
                 if (isSafe === '안전') {
                     div.textContent = isSafe
@@ -183,7 +185,7 @@
             if (item.type === "세슘137") {
                 const table1 = document.querySelector('.cesium-table');
                 table1.appendChild(tr);
-
+                region2.innerHTML = part
                 region2.appendChild(div)
                 if (isSafe === '안전') {
                     div.textContent = isSafe
